@@ -27,3 +27,24 @@ left_cancellation {ty} {op} a b c pf_eq = let
     in
     pf_10    
 
+
+right_cancellation : (Is_group ty op) => (a, b, c : ty) -> ((op b a) = (op c a)) -> (b = c)
+right_cancellation {ty} {op} a b c pf_eq = let
+    e = id_elem {ty} {op} -- for shortness of writing
+    a_inv = inverse {ty} {op} a
+    pf_a = proof_of_left_inverse {ty} {op} a -- a * a_inv = id
+    pf_1 = sym (proof_of_associativity {ty} {op} b a a_inv) -- (b * a) * a_inv = b * (a * a_inv)
+    pf_2 = monoid_property_1 {ty} {op} b (op a a_inv) e pf_a -- b * (a * a_inv) = b * e
+    pf_3 = proof_of_right_id {ty} {op} b -- b * e = b
+    pf_4 = trans pf_1 (trans pf_2 pf_3) -- (b * a) * a_inv = b
+    
+    pf_5 = sym (proof_of_associativity {ty} {op} c a a_inv) -- (c * a) * a_inv = c * (a * a_inv)
+    pf_6 = monoid_property_1 {ty} {op} c (op a a_inv) e pf_a -- c * (a_inv * a) = c * e
+    pf_7 = proof_of_right_id {ty} {op} c -- c * e = c
+    pf_8 = trans pf_5 (trans pf_6 pf_7) -- (c * a) * a_inv = c
+    
+    pf_9 = monoid_property_2 {ty} {op} a_inv (op b a) (op c a) pf_eq -- (b * a) * a_inv = (c * a) * a_inv
+    pf_10 = trans (sym pf_4) (trans pf_9 pf_8) -- b = c 
+    in
+    pf_10    
+
