@@ -2,16 +2,18 @@ module Group
 
 import Monoid
 
+%access public export
+
 interface (Is_monoid ty op) => Is_group (ty : Type) (op : ty -> ty -> ty) where
     inverse : ty -> ty
-    proof_of_left_inverse : (a : ty) -> ((op a (inverse a)) = (id_elem {ty = ty} {op = op} ))     
-    proof_of_right_inverse : (a : ty) -> ((op (inverse a) a) = (id_elem {ty = ty} {op = op} ))
+    proof_of_left_inverse : (a : ty) -> ((op (inverse a) a) = (id_elem {ty = ty} {op = op} ))     
+    proof_of_right_inverse : (a : ty) -> ((op a (inverse a)) = (id_elem {ty = ty} {op = op} ))
     
 left_cancellation : (Is_group ty op) => (a, b, c : ty) -> ((op a b) = (op a c)) -> (b = c)
 left_cancellation {ty} {op} a b c pf_eq = let
     e = id_elem {ty} {op} -- for shortness of writing
     a_inv = inverse {ty} {op} a
-    pf_a = proof_of_right_inverse {ty} {op} a -- a_inv * a = id
+    pf_a = proof_of_left_inverse {ty} {op} a -- a_inv * a = id
     pf_1 = proof_of_associativity {ty} {op} a_inv a b -- a_inv * (a * b) = (a_inv * a) * b
     pf_2 = monoid_property_2 {ty} {op} b (op a_inv a) e pf_a -- (a_inv * a) * b = e * b
     pf_3 = proof_of_left_id {ty} {op} b -- e * b = b
@@ -32,7 +34,7 @@ right_cancellation : (Is_group ty op) => (a, b, c : ty) -> ((op b a) = (op c a))
 right_cancellation {ty} {op} a b c pf_eq = let
     e = id_elem {ty} {op} -- for shortness of writing
     a_inv = inverse {ty} {op} a
-    pf_a = proof_of_left_inverse {ty} {op} a -- a * a_inv = id
+    pf_a = proof_of_right_inverse {ty} {op} a -- a * a_inv = id
     pf_1 = sym (proof_of_associativity {ty} {op} b a a_inv) -- (b * a) * a_inv = b * (a * a_inv)
     pf_2 = monoid_property_1 {ty} {op} b (op a a_inv) e pf_a -- b * (a * a_inv) = b * e
     pf_3 = proof_of_right_id {ty} {op} b -- b * e = b
