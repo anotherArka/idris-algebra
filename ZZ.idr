@@ -5,24 +5,24 @@ import Quotient_type
 
 %access public export
 
- ZZ : Type
- ZZ = (Nat, Nat)
+ZZ : Type
+ZZ = (Nat, Nat)
 
- ZZ_Rel : ZZ -> ZZ -> Type
- ZZ_Rel (a, b) (c, d) = ((a + d) = (b + c))
+ZZ_Rel : ZZ -> ZZ -> Type
+ZZ_Rel (a, b) (c, d) = ((a + d) = (b + c))
 
- ZZ_Rel_is_refl : (a : ZZ) -> (ZZ_Rel a a)
- ZZ_Rel_is_refl (a, b) = plusCommutative a b
+ZZ_Rel_is_refl : {x : ZZ} -> (ZZ_Rel x x)
+ZZ_Rel_is_refl {x = (a, b)} = plusCommutative a b
 
- ZZ_Rel_is_sym : (a : ZZ) -> (b : ZZ) -> (ZZ_Rel a b) -> (ZZ_Rel b a)
- ZZ_Rel_is_sym (a, b) (c, d) pf = let
+ZZ_Rel_is_sym : {x, y : ZZ} -> (ZZ_Rel x y) -> (ZZ_Rel y x)
+ZZ_Rel_is_sym {x = (a, b)} {y = (c, d)} pf = let
   pf1 = plusCommutative a d
   pf2 = plusCommutative b c
   in
   trans (sym pf2) (trans (sym pf) pf1)
 
-ZZ_Rel_is_trans : (a : ZZ) -> (b : ZZ) -> (c : ZZ) -> (ZZ_Rel a b) -> (ZZ_Rel b c) -> (ZZ_Rel a c)
-ZZ_Rel_is_trans (a, b) (c, d) (k, l) pf1 pf2 = let
+ZZ_Rel_is_trans : {x, y, z : ZZ} -> (ZZ_Rel x y) -> (ZZ_Rel y z) -> (ZZ_Rel x z)
+ZZ_Rel_is_trans {x = (a, b)} {y = (c, d)} {z = (k, l)} pf1 pf2 = let
   pf3 = adding_equal_to_both_sides (a + d) (b + c) (c + l) (d + k) pf1 pf2
   pf4 = adding_four_2 a d c l
   pf5 = adding_four_2 b c d k
@@ -33,6 +33,6 @@ ZZ_Rel_is_trans (a, b) (c, d) (k, l) pf1 pf2 = let
   in
   trans (plusCommutative a l) (trans pf9 (plusCommutative k b))
 
-Eq_implies_ZZ_Rel : (a, b : ZZ) -> (a = b) -> (ZZ_Rel a b)
-Eq_implies_ZZ_Rel a a Refl = ZZ_Rel_is_refl a  
+Eq_implies_ZZ_Rel : {x, y : ZZ} -> (x = y) -> (ZZ_Rel x y)
+Eq_implies_ZZ_Rel {x = a} {y = a} Refl = ZZ_Rel_is_refl {x = a}  
   

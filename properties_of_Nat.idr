@@ -26,7 +26,14 @@ adding_four_2 a b k l = rewrite (sym (plusAssociative a b (plus k l))) in
   (rewrite (sym (plusAssociative (plus b k) a l)) in 
   (rewrite (plusCommutative b k) in
   (rewrite (plusCommutative a l) in Refl))))))
-  
+
+adding_four_3 : (a, b, c, d : Nat) -> (((a + b) + (c + d)) = ((a + c) + (b + d)))
+adding_four_3 a b c d = rewrite (adding_four_1 a b c d) in 
+  (rewrite (plusAssociative b c d) in 
+  (rewrite (plusCommutative b c) in 
+  (rewrite (sym (plusAssociative c b d)) in  
+  (rewrite (adding_four_1 a c b d) in Refl))))
+
 adding_equal_to_both_sides : (a, b, c, d : Nat) -> (a = b) -> (c = d) -> ((a + c) = (b + d))
 adding_equal_to_both_sides a a c c Refl Refl = Refl
 
