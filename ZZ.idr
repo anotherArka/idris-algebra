@@ -1,6 +1,7 @@
 module ZZ
 
 import properties_of_Nat
+import Quotient_type
 
 %access public export
 
@@ -31,4 +32,7 @@ ZZ_Rel_is_trans (a, b) (c, d) (k, l) pf1 pf2 = let
   pf9 = cancellation (c + d) (l + a) (k + b) pf8 
   in
   trans (plusCommutative a l) (trans pf9 (plusCommutative k b))
+
+Eq_implies_ZZ_Rel : (a, b : ZZ) -> (a = b) -> (ZZ_Rel a b)
+Eq_implies_ZZ_Rel a a Refl = ZZ_Rel_is_refl a  
   
