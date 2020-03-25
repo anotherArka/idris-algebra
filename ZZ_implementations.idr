@@ -19,3 +19,6 @@ Num ZZ where
 Neg ZZ where
   negate = ZZ_inv
   (-) = ZZ_minus
+
+Abs ZZ where
+  abs = ZZ_abs
