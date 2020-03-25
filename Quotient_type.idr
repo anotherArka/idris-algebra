@@ -1,6 +1,7 @@
 module Quotient_type
 
 %access public export
+%access total
 
 relation_type : (ty : Type) -> Type
 relation_type ty = ty -> ty -> Type

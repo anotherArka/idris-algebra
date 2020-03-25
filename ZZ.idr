@@ -1,9 +1,11 @@
 module ZZ
 
+import Useful_functions
 import properties_of_Nat
 import Quotient_type
 
 %access public export
+%access total
 
 ZZ : Type
 ZZ = (Nat, Nat)
@@ -32,6 +34,16 @@ ZZ_Rel_is_trans {x = (a, b)} {y = (c, d)} {z = (k, l)} pf1 pf2 = let
   pf9 = cancellation (c + d) (l + a) (k + b) pf8 
   in
   trans (plusCommutative a l) (trans pf9 (plusCommutative k b))
+
+ZZ_canonical_from : ZZ -> ZZ
+ZZ_canonical_from (Z, n) = (Z, n)
+ZZ_canonical_from ((S m), Z) = ((S m), Z)
+ZZ_canonical_from ((S m), (S n)) = ZZ_canonical_from (m, n)
+
+ZZ_from_Integer : Integer -> ZZ
+ZZ_from_Integer n = if_then_else (n >= 0) 
+  (Nat_from_Integer n, 0)
+  (0, Nat_from_Integer n) 
 
 Eq_implies_ZZ_Rel : {x, y : ZZ} -> (x = y) -> (ZZ_Rel x y)
 Eq_implies_ZZ_Rel {x = a} {y = a} Refl = ZZ_Rel_is_refl {x = a}  

@@ -1,6 +1,7 @@
 module properties_of_Nat
 
 %access public export
+%access total
 
 Z_is_not_Sn : (n : Nat) -> ((S n) = Z) -> Void
 Z_is_not_Sn n Refl impossible

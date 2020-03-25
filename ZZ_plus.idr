@@ -4,6 +4,7 @@ import properties_of_Nat
 import ZZ
 
 %access public export
+%access total
 
 ZZ_plus : ZZ -> ZZ -> ZZ
 ZZ_plus (a, b) (c, d) = (a + c, b + d)
@@ -28,6 +29,7 @@ ZZ_plus_wrt_rel_helper (a, b) (c, d) (m, n) pf = let
   in
   trans pf1 (trans pf3 (sym pf2))
 
+||| Proof that ZZ_plus respects ZZ_Rel  
 ZZ_plus_wrt_rel : (a, b, c, d : ZZ) -> (ZZ_Rel a b) -> (ZZ_Rel c d) -> (ZZ_Rel (ZZ_plus a c) (ZZ_plus b d))
 ZZ_plus_wrt_rel a b c d pf1 pf2 = let
   pf3 = ZZ_plus_wrt_rel_helper a b c pf1
