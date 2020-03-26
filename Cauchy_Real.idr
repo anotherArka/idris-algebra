@@ -7,6 +7,9 @@ import Rational_ord
 import Rational_abs
 import Rational_implementations
 
+%access public export
+%access total
+
 Cauchy_condition : (rats : Stream Rational) -> Type
 Cauchy_condition rats = (n : Nat) -> 
   (m : Nat ** 
@@ -15,3 +18,4 @@ Cauchy_condition rats = (n : Nat) ->
 
 Cauchy_Real : Type
 Cauchy_Real = (rats : (Stream Rational) ** (Cauchy_condition rats))
+
