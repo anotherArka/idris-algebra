@@ -14,4 +14,4 @@ Eq ps qs = (n : Nat) ->
   (Rational_ord.LT (abs ((pick k (fst ps)) - (pick k (fst qs)))) (one, n))))
 
 Eq_is_refl : (ps : Cauchy_Real) -> (Eq ps ps)
-Eq_is_refl ps n = (Z ** ?rhs)
+Eq_is_refl ps n = (Z ** (\k, pfLTE => ?rhs))
