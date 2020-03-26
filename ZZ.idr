@@ -10,6 +10,9 @@ import Quotient_type
 ZZ : Type
 ZZ = (Nat, Nat)
 
+one : ZZ
+one = (1, 0)
+
 ZZ_Rel : ZZ -> ZZ -> Type
 ZZ_Rel (a, b) (c, d) = ((a + d) = (b + c))
 
