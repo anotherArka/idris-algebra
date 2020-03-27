@@ -49,5 +49,9 @@ ZZ_from_Integer n = if_then_else (n >= 0)
   (0, Nat_from_Integer n) 
 
 Eq_implies_ZZ_Rel : {x, y : ZZ} -> (x = y) -> (ZZ_Rel x y)
-Eq_implies_ZZ_Rel {x = a} {y = a} Refl = ZZ_Rel_is_refl {x = a}  
+Eq_implies_ZZ_Rel {x = a} {y = a} Refl = ZZ_Rel_is_refl {x = a} 
+
+||| Proof that ZZ_Rel is decidable
+ZZ_Rel_is_dec : (a, b : ZZ) -> (Dec (ZZ_Rel a b))
+ZZ_Rel_is_dec (a, b) (c , d) = decEq (a + d) (b + c)
   
