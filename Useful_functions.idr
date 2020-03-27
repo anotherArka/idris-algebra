@@ -16,3 +16,6 @@ pick : {ty : Type} -> (n : Nat) -> (Stream ty) -> ty
 pick Z (x :: xs) = x
 pick (S n) (x :: xs) = pick n xs 
 
+||| a = b and f : ty -> ty -> Type implies (f a) -> (f b)
+Family_respects_eq : {ty : Type} -> {a, b : ty} -> {f : ty -> Type} -> (a = b) -> (f a) -> (f b)
+Family_respects_eq {a = x} {b = x} Refl el = el

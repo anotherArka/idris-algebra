@@ -19,6 +19,21 @@ LTE_is_dec (S m) Z = No (\x => absurd x)
 LTE_is_dec (S m) (S n) = case (LTE_is_dec m n) of 
   Yes pf => Yes (LTESucc pf)
   No contra => No (\(LTESucc x) => contra x)
+
+||| Proof that a <= b implies (c + a) <= (c + b)
+LTE_property_1 : (a, b, c : Nat) -> (LTE a b) -> (LTE (c + a) (c + b))
+LTE_property_1 a b Z pfLTE = pfLTE
+LTE_property_1 a b (S n) pfLTE = LTESucc (LTE_property_1 a b n pfLTE)
+
+||| Proof that c + a <= c + b implies a <= b
+LTE_property_2 : (a, b, c : Nat) -> (LTE (c + a) (c + b)) -> (LTE a b)
+LTE_property_2 a b Z pfLTE = pfLTE
+LTE_property_2 a b (S n) (LTESucc pfLTE) = LTE_property_2 a b n pfLTE 
+
+||| Proof that a <= b and b <= c implies a <= c 
+LTE_trans : (a, b, c : Nat) -> (LTE a b) -> (LTE b c) -> (LTE a c)
+LTE_trans Z b c _ _ = LTEZero
+LTE_trans (S a) (S b) (S c) (LTESucc pf1) (LTESucc pf2) = LTESucc (LTE_trans a b c pf1 pf2)
     
 cancellation : (k : Nat) -> (a : Nat) -> (b : Nat) -> (plus k a = plus k b) -> (a = b)
 cancellation Z a b prf = prf
