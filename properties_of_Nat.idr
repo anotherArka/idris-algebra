@@ -12,6 +12,14 @@ n_eq_m_implies_Sn_eq_Sm n m prf = cong prf
 Sn_eq_Sm_implies_n_eq_m : (n : Nat) -> (m : Nat) -> (S n) = (S m) -> (n = m)
 Sn_eq_Sm_implies_n_eq_m n n Refl = Refl
 
+||| Proof that LT for Nat is decidable
+LTE_is_dec : (a, b : Nat) -> (Dec (LTE a b))
+LTE_is_dec Z b = Yes LTEZero
+LTE_is_dec (S m) Z = No (\x => absurd x)
+LTE_is_dec (S m) (S n) = case (LTE_is_dec m n) of 
+  Yes pf => Yes (LTESucc pf)
+  No contra => No (\(LTESucc x) => contra x)
+    
 cancellation : (k : Nat) -> (a : Nat) -> (b : Nat) -> (plus k a = plus k b) -> (a = b)
 cancellation Z a b prf = prf
 cancellation (S k) a b prf = cancellation k a b (Sn_eq_Sm_implies_n_eq_m (plus k a) (plus k b) prf)	 
