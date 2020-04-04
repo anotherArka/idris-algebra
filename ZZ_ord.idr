@@ -55,4 +55,10 @@ LTE_property_1 (a, Z) (c, d) LTEZero pf2 = rewrite (plusCommutative (mult a d) 0
   (rewrite (plusCommutative (mult a c) 0) in 
   LTE_property_3 _ _ _ pf2)
 
-LTE_property_1 ((S a), (S b)) (c, d) (LTESucc pf1) pf2 = ?rhs1
+LTE_property_1 ((S a), (S b)) (c, d) (LTESucc pf1) pf2 = let
+  induct_hyp = LTE_property_1 (a, b) (c, d)  pf1 pf2
+  pf = LTE_property_1 _ _ (d + c) induct_hyp -- this one is from properties of nat
+  in
+   rewrite (adding_four_3 d (a * d) c (b * c)) in 
+  (rewrite (adding_four_3 c (a * c) d (b * d)) in 
+  (rewrite (plusCommutative c d) in pf))
