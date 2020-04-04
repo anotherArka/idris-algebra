@@ -57,6 +57,8 @@ LTE a b = LTEZero (Rational_minus a b)
 
 LTZero_respects_Rel : (a, b : Rational) -> (Rational_Rel a b) -> (LTEZero a) -> (LTEZero b)
 LTZero_respects_Rel (a, b) (p, q) pfRel pfLTE = let
-   
+  pf1 = LTE_property_2 (S q)
+  pf2 = LTE_property_2 (S b)
+  
   in
   ?rhs

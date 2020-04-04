@@ -62,3 +62,21 @@ LTE_property_1 ((S a), (S b)) (c, d) (LTESucc pf1) pf2 = let
    rewrite (adding_four_3 d (a * d) c (b * c)) in 
   (rewrite (adding_four_3 c (a * c) d (b * d)) in 
   (rewrite (plusCommutative c d) in pf))
+
+|||Proof that (S q, 0) >= 0
+LTE_property_2 : (n : Nat) -> (LTE ZZ.zero (n , 0))
+LTE_property_2 Z = LTEZero
+LTE_property_2 (S k) = LTEZero
+
+||| Proof that if a <= 0 and b >= 0 then a * b >= 0
+LTE_property_3 : (a, b : ZZ) -> (LTE a ZZ.zero) -> (LTE ZZ.zero b) -> (LTE (ZZ_mult a b) ZZ.zero)
+LTE_property_3 (a, b) (c, d) pf1 pf2 = 
+  let
+  pf3 = Family_respects_eq {f = (\x => (LTE x (b + 0)))} (plusCommutative a 0) pf1
+  pf4 = Family_respects_eq {f = (\x => (LTE a x))} (plusCommutative b 0) pf3
+  pf5 = LTE_property_1 (b, a) (c, d) pf4 pf2
+  in
+   rewrite (plusCommutative ((a * c) + (b * d)) 0) in
+  (rewrite (plusCommutative ((a * d) + (b * c)) 0) in 
+  (rewrite (plusCommutative (a * c) (b * d)) in 
+  (rewrite (plusCommutative (a * d) (b * c)) in pf5)))
