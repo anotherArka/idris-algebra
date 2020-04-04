@@ -18,9 +18,6 @@ ZZ_plusAssociative (a, b) (c, d) (m, n) =
   rewrite (plusAssociative a c m) in 
     (rewrite (plusAssociative b d n) in Refl)
 
-ZZ_zero : ZZ
-ZZ_zero = (Z, Z)
-
 ZZ_plus_wrt_rel_helper : (a, b, c : ZZ) -> (ZZ_Rel a b) -> (ZZ_Rel (ZZ_plus a c) (ZZ_plus b c))
 ZZ_plus_wrt_rel_helper (a, b) (c, d) (m, n) pf = let
   pf1 = adding_four_3 a m d n
@@ -41,3 +38,4 @@ ZZ_plus_wrt_rel a b c d pf1 pf2 = let
   (ZZ_Rel_is_trans pf5
   (ZZ_Rel_is_trans pf4
   (ZZ_Rel_is_sym pf6)))
+

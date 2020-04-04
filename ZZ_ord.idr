@@ -3,6 +3,7 @@ module ZZ_ord
 import properties_of_Nat
 import Useful_functions
 import ZZ
+import ZZ_plus
 import ZZ_minus
 import ZZ_mult
 
@@ -49,5 +50,9 @@ LTEZero_respects_ZZ_Rel (a, b) (c, d) pfRel pfLTE = let
   pf8
 
 ||| Proof that if a >= 0 and b >= 0 then a * b >= 0
-LTE_property_1 : (a, b : ZZ) -> (LTE zero a) -> (LTE zero b) -> (LTE zero (ZZ_mult a b))
-LTE_property_1 (a, b) (c, d) pf1 pf2 = ?rhs11111
+LTE_property_1 : (a, b : ZZ) -> (LTE ZZ.zero a) -> (LTE ZZ.zero b) -> (LTE ZZ.zero (ZZ_mult a b))
+LTE_property_1 (a, Z) (c, d) LTEZero pf2 = rewrite (plusCommutative (mult a d) 0) in
+  (rewrite (plusCommutative (mult a c) 0) in 
+  LTE_property_3 _ _ _ pf2)
+
+LTE_property_1 ((S a), (S b)) (c, d) (LTESucc pf1) pf2 = ?rhs1

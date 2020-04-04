@@ -1,5 +1,8 @@
 module properties_of_Nat
 
+
+import Useful_functions
+
 %access public export
 %access total
 
@@ -34,6 +37,21 @@ LTE_property_2 a b (S n) (LTESucc pfLTE) = LTE_property_2 a b n pfLTE
 LTE_trans : (a, b, c : Nat) -> (LTE a b) -> (LTE b c) -> (LTE a c)
 LTE_trans Z b c _ _ = LTEZero
 LTE_trans (S a) (S b) (S c) (LTESucc pf1) (LTESucc pf2) = LTESucc (LTE_trans a b c pf1 pf2)
+
+||| Proof that a <= b implies c*a <= c*b
+LTE_property_3 : (a, b, c : Nat) -> (LTE a b) -> (LTE (c * a) (c * b))
+LTE_property_3 a b Z _ = LTEZero
+LTE_property_3 a b (S c) pfLTE = let
+  induct_hyp = LTE_property_3 a b c pfLTE
+  pf1 = LTE_property_1 (c * a) (c * b) b induct_hyp
+  pf2 = LTE_property_1 a b (c * a) pfLTE
+  pf3 = Family_respects_eq {f = (\x => (LTE x ((c * a) + b)))} 
+    (plusCommutative (c * a) a) pf2
+  pf4 = LTE_property_1 (c * a) (c * b) b induct_hyp
+  pf5 = Family_respects_eq {f = (\x => (LTE x (b + (c * b))))} 
+    (plusCommutative b (c * a)) pf4
+  in
+  LTE_trans _ _ _ pf3 pf5
     
 cancellation : (k : Nat) -> (a : Nat) -> (b : Nat) -> (plus k a = plus k b) -> (a = b)
 cancellation Z a b prf = prf

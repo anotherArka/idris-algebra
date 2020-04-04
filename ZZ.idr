@@ -10,6 +10,9 @@ import Quotient_type
 ZZ : Type
 ZZ = (Nat, Nat)
 
+zero : ZZ
+zero = (Z, Z)
+
 one : ZZ
 one = (1, 0)
 
@@ -54,4 +57,6 @@ Eq_implies_ZZ_Rel {x = a} {y = a} Refl = ZZ_Rel_is_refl {x = a}
 ||| Proof that ZZ_Rel is decidable
 ZZ_Rel_is_dec : (a, b : ZZ) -> (Dec (ZZ_Rel a b))
 ZZ_Rel_is_dec (a, b) (c , d) = decEq (a + d) (b + c)
+
+
   
