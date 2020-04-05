@@ -1,6 +1,7 @@
 module Rational_ord
 
 import ZZ
+import ZZ_mult
 import ZZ_ord
 import Rational
 import Rational_minus
@@ -59,6 +60,8 @@ LTZero_respects_Rel : (a, b : Rational) -> (Rational_Rel a b) -> (LTEZero a) -> 
 LTZero_respects_Rel (a, b) (p, q) pfRel pfLTE = let
   pf1 = LTE_property_2 (S q)
   pf2 = LTE_property_2 (S b)
-  
+  pf3 = LTE_property_1 a ((S q), 0) 
   in
-  ?rhs
+  case (LTE_is_dec ZZ.zero p) of
+    (Yes pf_Z_LTE_p) => ?rhs1 
+    (No contra_Z_LTE_p) => ?rhs2

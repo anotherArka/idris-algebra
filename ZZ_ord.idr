@@ -80,3 +80,7 @@ LTE_property_3 (a, b) (c, d) pf1 pf2 =
   (rewrite (plusCommutative ((a * d) + (b * c)) 0) in 
   (rewrite (plusCommutative (a * c) (b * d)) in 
   (rewrite (plusCommutative (a * d) (b * c)) in pf5)))
+
+||| Proof that if (a >= 0) leads to a contradiction then (a <= 0)
+LTE_property_4 : (a : ZZ) -> ((LTE ZZ.zero a) -> Void) -> (LTEZero a)
+LTE_property_4 (a, b) contraLTE = LTE_property_5 a b contraLTE

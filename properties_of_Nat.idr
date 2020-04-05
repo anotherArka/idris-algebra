@@ -52,7 +52,22 @@ LTE_property_3 a b (S c) pfLTE = let
     (plusCommutative b (c * a)) pf4
   in
   LTE_trans _ _ _ pf3 pf5
-    
+
+||| Proof that if (S a) <= (S b) then (a <= b)
+LTE_property_4 : (a, b : Nat) -> (LTE (S a) (S b)) -> (LTE a b)
+LTE_property_4 Z _ _ = LTEZero
+LTE_property_4 (S a) Z (LTESucc pf) impossible
+LTE_property_4 (S a) (S b) (LTESucc pf) = pf
+
+||| Proof that if a >= b leads to a contradiction then a <= b  
+LTE_property_5 : (a, b : Nat) -> ((LTE b a) -> Void) -> LTE a b 
+LTE_property_5 _ Z contraLTE = void (contraLTE LTEZero)
+LTE_property_5 Z (S b) contraLTE = LTEZero
+LTE_property_5 (S a) (S b) contraLTE = case (LTE_is_dec b a) of
+  Yes pf => void (contraLTE (LTESucc pf))
+  No contra => LTESucc (LTE_property_5 a b contra) 
+      
+
 cancellation : (k : Nat) -> (a : Nat) -> (b : Nat) -> (plus k a = plus k b) -> (a = b)
 cancellation Z a b prf = prf
 cancellation (S k) a b prf = cancellation k a b (Sn_eq_Sm_implies_n_eq_m (plus k a) (plus k b) prf)	 
