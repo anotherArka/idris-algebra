@@ -4,6 +4,7 @@ import ZZ
 import ZZ_plus
 import ZZ_mult
 import ZZ_ord
+import ZZ_implementations
 import Rational
 import Rational_minus
 
@@ -68,14 +69,16 @@ LTZero_respects_Rel (a, b) (p, q) pfRel pfLTE = let
       pf3 = ZZ_plusCommutative a ZZ.zero -- a + 0 = 0 + a
       pf4 = ZZ_zero_is_additive_identity a -- 0 + a = a
       pf5 = trans pf3 pf4 -- a + 0 = a
-      pf6 = ZZ_Rel_is_sym (Eq_implies_ZZ_Rel pf5) -- (0 + a) ~ a
-      pf7 = LTEZero_respects_ZZ_Rel _ _ pf6 pfLTE -- LTEZero (0 + a)
+      pf6 = ZZ_Rel_is_sym {x = (ZZ_plus a ZZ.zero)} {y = a} (Eq_implies_ZZ_Rel pf5) -- a ~  (a + 0) 
+      pf7 = LTEZero_respects_ZZ_Rel a (ZZ_plus a ZZ.zero) pf6 pfLTE -- LTEZero (a + 0)
       pf8 = LTE_property_3 a ((S q), 0) pf7 pf1 -- LTE (a * (q + 1)) ZZ.zero
       pf9 = ZZ_plusCommutative (ZZ_mult a (S q, 0)) ZZ.zero -- (a * (q + 1)) + 0 = 0 + (a * (q + 1))  
       pf10 = ZZ_zero_is_additive_identity (ZZ_mult a (S q, 0)) -- 0 + (a * (q + 1)) = (a * (q + 1))
       pf11 = trans pf9 pf10 -- (a * (q + 1)) + 0 = (a * (q + 1))
       pf12 = (Eq_implies_ZZ_Rel pf11) -- (a * (q + 1)) + 0 ~ (a * (q + 1))    
-      pf13 = LTEZero_respects_ZZ_Rel _ _ pf12 pf8
+      pf13 = LTEZero_respects_ZZ_Rel (ZZ_plus (ZZ_mult a (S q, 0)) 0) (ZZ_mult a (S q, 0)) pf12 pf8 
+      --  LTEZero (ZZ_mult a (S q, 0))
+      pf14 = LTEZero_respects_ZZ_Rel (ZZ_mult a (S q, 0)) (ZZ_mult p (S b, 0)) pfRel pf13
 
     in
     ?rhs
