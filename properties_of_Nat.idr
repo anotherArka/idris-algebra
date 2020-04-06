@@ -1,6 +1,5 @@
 module properties_of_Nat
 
-
 import Useful_functions
 
 %access public export
@@ -60,13 +59,17 @@ LTE_property_4 (S a) Z (LTESucc pf) impossible
 LTE_property_4 (S a) (S b) (LTESucc pf) = pf
 
 ||| Proof that if a >= b leads to a contradiction then a <= b  
-LTE_property_5 : (a, b : Nat) -> ((LTE b a) -> Void) -> LTE a b 
+LTE_property_5 : (a, b : Nat) -> ((LTE b a) -> Void) -> (LTE a b) 
 LTE_property_5 _ Z contraLTE = void (contraLTE LTEZero)
 LTE_property_5 Z (S b) contraLTE = LTEZero
 LTE_property_5 (S a) (S b) contraLTE = case (LTE_is_dec b a) of
   Yes pf => void (contraLTE (LTESucc pf))
-  No contra => LTESucc (LTE_property_5 a b contra) 
-      
+  No contra => LTESucc (LTE_property_5 a b contra)   
+
+||| Proof that a = b implies a <= b
+LTE_property_6 : (a, b : Nat) -> (a = b) -> (LTE a b)
+LTE_property_6 Z Z Refl = LTEZero      
+LTE_property_6 (S n) (S n) Refl = LTESucc (LTE_property_6 n n Refl)
 
 cancellation : (k : Nat) -> (a : Nat) -> (b : Nat) -> (plus k a = plus k b) -> (a = b)
 cancellation Z a b prf = prf
@@ -94,6 +97,14 @@ adding_four_3 a b c d = rewrite (adding_four_1 a b c d) in
 adding_equal_to_both_sides : (a, b, c, d : Nat) -> (a = b) -> (c = d) -> ((a + c) = (b + d))
 adding_equal_to_both_sides a a c c Refl Refl = Refl
 
+cancellation_mult : (a, b, c : Nat) -> (b * (S a) = c * (S a)) -> (b = c)
+cancellation_mult a Z Z _ = Refl
+cancellation_mult a (S b) Z pfEq = absurd pfEq
+cancellation_mult a (S b) (S c) pfEq = let
+  pf1 = Sn_eq_Sm_implies_n_eq_m _ _ pfEq
+  pf2 = cancellation _ _ _ pf1 
+  in
+  cong (cancellation_mult _ _ _ pf2)
 -- public export
  	
 -- multiplying_four_1 : (a : Nat) -> (b : Nat) -> (k : Nat) -> (l : Nat) -> mult (mult a b) (mult k l) = mult a (mult b (mult k l))
