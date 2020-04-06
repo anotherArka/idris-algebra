@@ -54,3 +54,36 @@ ZZ_is_integral_domain_helper Z (S b) (S c) (S d) pfRel_mult = let
   pf10 = trans pf9 (trans (sym pf7) (sym pf8))
   in
   (Right pf10)
+ZZ_is_integral_domain_helper (S a) Z Z (S d) pfRel_mult = let
+  pf1 = plusCommutative (mult a 0) 0 
+  pf2 = multCommutative a 0
+  pf3 = plusCommutative (plus (mult a 0) 0) 0
+  pf4 = trans pf3 (trans pf1 pf2)
+  pf5 = trans (sym pf4) pfRel_mult  
+  in
+  absurd pf5
+ZZ_is_integral_domain_helper (S a) Z (S c) Z pfRel_mult = let
+  pf1 = plusCommutative (mult a 0) 0 
+  pf2 = multCommutative a 0
+  pf3 = plusCommutative (plus (mult a 0) 0) 0
+  pf4 = trans pf3 (trans pf1 pf2)
+  pf5 = trans pfRel_mult pf4  
+  in
+  absurd pf5
+ZZ_is_integral_domain_helper (S a) Z (S c) (S d) pfRel_mult = let
+  pf1 = Sn_eq_Sm_implies_n_eq_m _ _ pfRel_mult
+  pf2 = plusCommutative (plus d (mult a (S d))) 0
+  pf3 = plusCommutative (plus c (mult a (S c))) 0
+  pf4 = plusCommutative (plus (plus d (mult a (S d))) 0) 0
+  pf5 = plusCommutative (plus (plus c (mult a (S c))) 0) 0
+  pf6 = trans pf4 pf2
+  pf7 = trans pf5 pf3
+  pf8 = trans (sym pf7) (trans pf1 pf6)
+  pf9 = cong {f = S} pf8
+  pf10 = trans (multCommutative (S c) (S a)) (trans pf9 (multCommutative (S a) (S d)))
+  pf11 = cancellation_mult a (S c) (S d) pf10
+  in 
+  Right(
+  (rewrite (plusCommutative c 0) in
+  (rewrite (plusCommutative d 0) in pf11)))
+
