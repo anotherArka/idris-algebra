@@ -1,5 +1,6 @@
 module ZZ_mult
 
+import Useful_functions
 import ZZ
 import properties_of_Nat
 
@@ -25,6 +26,7 @@ ZZ_mult_commutative (a, b) (c, d) = rewrite (multCommutative a c) in
   (rewrite (multCommutative b c) in 
   (rewrite (plusCommutative (c * b) (d * a)) in Refl))))
 
+||| Proof that if a * b ~ 0 then either a ~ 0 or b ~ 0
 ZZ_is_integral_domain_helper : (a, b, c, d : Nat) -> (ZZ_Rel (ZZ_mult (a, b) (c, d)) ZZ.zero) -> 
   (Either (ZZ_Rel (a, b) ZZ.zero) (ZZ_Rel (c, d) ZZ.zero))
 ZZ_is_integral_domain_helper Z Z _ _ _ = Left Refl
@@ -86,4 +88,12 @@ ZZ_is_integral_domain_helper (S a) Z (S c) (S d) pfRel_mult = let
   Right(
   (rewrite (plusCommutative c 0) in
   (rewrite (plusCommutative d 0) in pf11)))
+ZZ_is_integral_domain_helper (S a) (S b) Z (S d) pfRel_mult = let
+  pf1 = ZZ_mult_commutative ((S a), (S b)) (Z, (S d))
+  pf2 = Family_respects_eq {f = (\x => (ZZ_Rel x ZZ.zero))}  pf1 pfRel_mult
+  pf3 = ZZ_is_integral_domain_helper Z (S d) (S a) (S b) pf2
+  in
+  case pf3 of 
+    Left pf => Right pf
+    Right pf => Left pf 
 
