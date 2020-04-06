@@ -96,4 +96,12 @@ ZZ_is_integral_domain_helper (S a) (S b) Z (S d) pfRel_mult = let
   case pf3 of 
     Left pf => Right pf
     Right pf => Left pf 
+ZZ_is_integral_domain_helper (S a) (S b) (S c) Z pfRel_mult = let
+  pf1 = ZZ_mult_commutative ((S a), (S b)) ((S c), Z)
+  pf2 = Family_respects_eq {f = (\x => (ZZ_Rel x ZZ.zero))}  pf1 pfRel_mult
+  pf3 = ZZ_is_integral_domain_helper (S c) Z (S a) (S b) pf2
+  in
+  case pf3 of 
+    Left pf => Right pf
+    Right pf => Left pf
 
