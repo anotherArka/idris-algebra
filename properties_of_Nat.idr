@@ -99,6 +99,7 @@ adding_equal_to_both_sides a a c c Refl Refl = Refl
 
 cancellation_mult : (a, b, c : Nat) -> (b * (S a) = c * (S a)) -> (b = c)
 cancellation_mult a Z Z _ = Refl
+cancellation_mult a Z (S c) pfEq = absurd pfEq
 cancellation_mult a (S b) Z pfEq = absurd pfEq
 cancellation_mult a (S b) (S c) pfEq = let
   pf1 = Sn_eq_Sm_implies_n_eq_m _ _ pfEq

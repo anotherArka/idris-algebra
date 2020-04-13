@@ -33,6 +33,11 @@ Z_mult_wrt_rel_helper (a, b) (c, d) (m, n) pfRel = ?rhs_wrt_helper -- this needs
 ||| Proof that ZZ_mult respects ZZ_Rel
 ZZ_mult_wrt_rel : (a, b, c, d : ZZ) -> (ZZ_Rel a b) -> (ZZ_Rel c d) -> (ZZ_Rel (ZZ_mult a c) (ZZ_mult b d))
 
+||| (a + 1, b + 1) * (c, d) ~ (a, b) ~ (c, d)
+ZZ_mult_property_1 : (a, b, c, d : Nat) -> (ZZ_Rel (ZZ_mult (S a, S b) (c, d)) (ZZ_mult (a, b) (c, d)))
+ZZ_mult_property_1 a b c d = rewrite (sym (plusAssociative c (a * c) ((S b) * d))) in 
+  (rewrite (plusCommutative (a * c) ((S b) * d)) in ?rhs_mult_property_1)
+
 ||| Proof that if a * b ~ 0 then either a ~ 0 or b ~ 0
 ZZ_is_integral_domain_helper : (a, b, c, d : Nat) -> (ZZ_Rel (ZZ_mult (a, b) (c, d)) ZZ.zero) -> 
   (Either (ZZ_Rel (a, b) ZZ.zero) (ZZ_Rel (c, d) ZZ.zero))
@@ -96,21 +101,32 @@ ZZ_is_integral_domain_helper (S a) Z (S c) (S d) pfRel_mult = let
   (rewrite (plusCommutative c 0) in
   (rewrite (plusCommutative d 0) in pf11)))
 ZZ_is_integral_domain_helper (S a) (S b) Z (S d) pfRel_mult = let
-  pf1 = ZZ_mult_commutative ((S a), (S b)) (Z, (S d))
-  pf2 = Family_respects_eq {f = (\x => (ZZ_Rel x ZZ.zero))}  pf1 pfRel_mult
-  pf3 = ZZ_is_integral_domain_helper Z (S d) (S a) (S b) pf2
+  pf1 = plusCommutative (plus (mult a 0) (S (plus d (mult b (S d))))) 0
+  pf2 = plusCommutative (mult a 0) (S (plus d (mult b (S d))))
+  pf3 = cong {f = (\x => (x + (S (plus d (mult b (S d))))))} (multCommutative a 0)
+  pf4 = cong {f = S} (plusCommutative  (plus (plus d (mult a (S d))) (mult b 0)) 0)
+  pf5 = cong {f = (\x => (S (plus (plus d (mult a (S d))) x)))} (multCommutative b 0)
+  pf6 = cong {f = S} (plusCommutative (plus d (mult a (S d))) 0)
+  pf7 = trans pfRel_mult (trans pf4 (trans pf5 pf6))
+  pf8 = trans pf1 pf3
+  pf9 = (trans (sym pf8) pf7)
+  pf10 = sym (cancellation_mult d (S b) (S a) pf9)
   in
-  case pf3 of 
-    Left pf => Right pf
-    Right pf => Left pf 
+  Left (rewrite (plusCommutative a 0) in
+       (rewrite (plusCommutative b 0) in pf10)) 
 ZZ_is_integral_domain_helper (S a) (S b) (S c) Z pfRel_mult = let
-  pf1 = ZZ_mult_commutative ((S a), (S b)) ((S c), Z)
-  pf2 = Family_respects_eq {f = (\x => (ZZ_Rel x ZZ.zero))}  pf1 pfRel_mult
-  pf3 = ZZ_is_integral_domain_helper (S c) Z (S a) (S b) pf2
+  pf1 = plusCommutative (plus (plus c (mult a (S c))) (mult b 0)) 0
+  pf2 = cong {f = (\x => (plus (plus c (mult a (S c))) x))} (multCommutative b 0)
+  pf3 = plusCommutative (plus c (mult a (S c))) 0
+  pf4 = cong {f = S} (trans pf1 (trans pf2 pf3))
+  pf5 = plusCommutative (plus (mult a 0) (S (plus c (mult b (S c))))) 0
+  pf6 = cong {f = (\x => (x + (S (plus c (mult b (S c))))))} (multCommutative a 0)
+  pf7 = trans pf5 pf6
+  pf8 = trans (sym pf4) (trans pfRel_mult pf7)
+  pf9 = cancellation_mult c (S a) (S b) pf8 
   in
-  case pf3 of 
-    Left pf => Right pf
-    Right pf => Left pf
+  Left (rewrite (plusCommutative a 0) in
+       (rewrite (plusCommutative b 0) in pf9))
 ZZ_is_integral_domain_helper (S a) (S b) (S c) (S d) pfRel_mult = let
   pf1 = plusCommutative (plus (plus c (mult a (S c))) (S (plus d (mult b (S d))))) 0
   pf2 = cong {f = S} pf1
