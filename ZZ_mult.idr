@@ -137,11 +137,13 @@ ZZ_is_integral_domain_helper (S a) (S b) (S c) (S d) pfRel_mult = let
                         (plus (mult b (S d)) (mult a (S c))) pf20
   pf22 = plusCommutative (mult a (S d)) (mult b (S c))
   pf23 = plusCommutative (mult b (S d)) (mult a (S c))
-  pf25 = (trans (plusCommutative (plus (mult a (S c)) (mult b (S d))) 0)
-         (trans (sym pf23)
-         (plusCommutative 0 (plus (mult b (S d)) (mult a (S c))))))
-  pf26 = ZZ_is_integral_domain_helper a b (S c) (S d) ?rhs1                      
-  
+  pf24 = sym (trans pf21 pf23)
+  pf26 = ZZ_is_integral_domain_helper a b (S c) (S d) 
+    (trans (plusCommutative (plus (mult a (S c)) (mult b (S d))) 0) 
+    (trans pf24
+    (plusCommutative 0 (plus (mult a (S d)) (mult b (S c))))))                      
   in
-  ?rhs 
+  case pf26 of
+    Right pf => Right pf
+    Left pf => Left (cong {f = S} pf)
 
