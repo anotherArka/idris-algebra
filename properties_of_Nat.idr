@@ -71,6 +71,13 @@ LTE_property_6 : (a, b : Nat) -> (a = b) -> (LTE a b)
 LTE_property_6 Z Z Refl = LTEZero      
 LTE_property_6 (S n) (S n) Refl = LTESucc (LTE_property_6 n n Refl)
 
+||| Proof that a <= b and b <= a implies a = b
+LTE_property_7 : (a, b : Nat) -> (LTE a b) -> (LTE b a) -> (a = b)
+LTE_property_7 Z Z _ _ = Refl
+LTE_property_7 Z (S b) _ pf1 impossible
+LTE_property_7 (S a) Z pf1 _ impossible
+LTE_property_7 (S a) (S b) (LTESucc pf1) (LTESucc pf2) = cong (LTE_property_7 a b pf1 pf2)
+
 cancellation : (k : Nat) -> (a : Nat) -> (b : Nat) -> (plus k a = plus k b) -> (a = b)
 cancellation Z a b prf = prf
 cancellation (S k) a b prf = cancellation k a b (Sn_eq_Sm_implies_n_eq_m (plus k a) (plus k b) prf)	 

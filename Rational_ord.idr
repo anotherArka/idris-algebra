@@ -80,6 +80,7 @@ LTZero_respects_Rel (a, b) (p, q) pfRel pfLTE = let
       --  LTEZero (ZZ_mult a (S q, 0))
       pf14 = LTEZero_respects_ZZ_Rel (ZZ_mult a (S q, 0)) (ZZ_mult p (S b, 0)) pfRel pf13
       pf15 = LTE_property_5 p contraLTE_p -- LTE ZZ.zero p
-      pf16 = LTE_property_1 p ((S b), 0) pf15 pf2 -- LTE ZZ.zero (ZZ_mult p (S q, 0))  
+      pf16 = LTE_property_1 p ((S b), 0) pf15 pf2 -- LTE ZZ.zero (ZZ_mult p (S q, 0))
+     
     in
     ?rhs

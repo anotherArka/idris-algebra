@@ -65,11 +65,6 @@ ZZ_mult_wrt_rel a b c d pfRel_ab pfRel_cd = let
   (ZZ_Rel_is_trans pf2
   (ZZ_Rel_is_trans pf3 pf4))
 
-||| (a + 1, b + 1) * (c, d) ~ (a, b) ~ (c, d)
-ZZ_mult_property_1 : (a, b, c, d : Nat) -> (ZZ_Rel (ZZ_mult (S a, S b) (c, d)) (ZZ_mult (a, b) (c, d)))
-ZZ_mult_property_1 a b c d = rewrite (sym (plusAssociative c (a * c) ((S b) * d))) in 
-  (rewrite (plusCommutative (a * c) ((S b) * d)) in ?rhs_mult_property_1)
-
 ||| Helper to prove that if a * b ~ 0 then either a ~ 0 or b ~ 0
 ZZ_is_integral_domain_helper : (a, b, c, d : Nat) -> (ZZ_Rel (ZZ_mult (a, b) (c, d)) ZZ.zero) -> 
   (Either (ZZ_Rel (a, b) ZZ.zero) (ZZ_Rel (c, d) ZZ.zero))

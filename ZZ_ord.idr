@@ -68,7 +68,7 @@ LTE_property_2 : (n : Nat) -> (LTE ZZ.zero (n , 0))
 LTE_property_2 Z = LTEZero
 LTE_property_2 (S k) = LTEZero
 
-||| Proof that if a <= 0 and b >= 0 then a * b >= 0
+||| Proof that if a <= 0 and b >= 0 then a * b <= 0
 LTE_property_3 : (a, b : ZZ) -> (LTE a ZZ.zero) -> (LTE ZZ.zero b) -> (LTE (ZZ_mult a b) ZZ.zero)
 LTE_property_3 (a, b) (c, d) pf1 pf2 = 
   let
@@ -88,3 +88,11 @@ LTE_property_4 (a, b) contraLTE = (LTE_property_5 a b contraLTE)
 ||| Proof that if (a <= 0) leads to a contradiction then (a >= 0)
 LTE_property_5 : (a : ZZ) -> ((LTEZero a) -> Void) -> (LTE ZZ.zero a)
 LTE_property_5 (a, b) contraLTE = LTE_property_5 b a contraLTE
+
+||| Proof that if a <= b and b <= a then a = b
+LTE_property_6 : (x, y : ZZ) -> (LTE x y) -> (LTE y x) -> (ZZ_Rel x y)
+LTE_property_6 (a, b) (c, d) pf_xy pf_yx = let
+  pf1 = Family_respects_eq {f = (\x => (LTE (c + b) x))} (plusCommutative d a) pf_yx
+  pf2 = Family_respects_eq {f = (\x => (LTE x (a + d)))} (plusCommutative c b) pf1
+  in
+  (LTE_property_7 _ _ pf_xy pf2)
