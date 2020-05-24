@@ -101,7 +101,7 @@ LTE_property_5 (a, b) contraLTE = (LTE_property_5 b a contraLTE, \pf =>
   in
   (contraLTE pf2))  
 
-||| Proof that if a <= b and b <= a then a = b
+||| Proof that if a <= b and b <= a then a ~ b
 LTE_property_6 : (x, y : ZZ) -> (LTE x y) -> (LTE y x) -> (ZZ_Rel x y)
 LTE_property_6 (a, b) (c, d) pf_xy pf_yx = let
   pf1 = Family_respects_eq {f = (\x => (LTE (c + b) x))} (plusCommutative d a) pf_yx
@@ -113,4 +113,6 @@ LTE_transformation_1 : (a : ZZ) -> (LTEZero a) -> (LTE a ZZ.zero)
 LTE_transformation_1 (a, b) pfLTE = rewrite (plusCommutative a 0) in
   (rewrite (plusCommutative b 0) in pfLTE)  
 
-  
+LTE_transformation_2 : (a : ZZ) -> (LTE a ZZ.zero) -> (LTEZero a)   
+LTE_transformation_2 (a, b) pfLTE = rewrite (plusCommutative 0 a) in
+  (rewrite (plusCommutative 0 b) in pfLTE)

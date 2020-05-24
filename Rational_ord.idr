@@ -87,6 +87,10 @@ LTEZero_respects_Rel (a, b) (p, q) pfRel pfLTE = let
       pf8 = Family_respects_eq {f = \x => LTEZero x} 
         (snd (ZZ_zero_is_additive_identity (ZZ_mult a (S q, 0)))) pf7
       pf9 = LTEZero_respects_ZZ_Rel (ZZ_mult a ((S q), 0)) (ZZ_mult p ((S b), 0)) pfRel pf8 
-      -- we have to prove that for integers a <= 0 and a >= 0 implies a = 0 then use it on (ZZ_mult p ((S b), 0))       
+      -- we have to prove that for integers a <= 0 and a >= 0 implies a = 0 then use it on (ZZ_mult p ((S b), 0))
+      pf10 : (LTE ZZ.zero (ZZ_mult p (S b, 0))) = LTE_property_1 p ((S b), 0) (fst pf1) pf2
+      pf11 : (ZZ_Rel (ZZ_mult p (S b, 0)) ZZ.zero) = (LTE_property_6  
+        (ZZ_mult p (S b, 0)) ZZ.zero 
+        (LTE_transformation_1 (ZZ_mult p (S b, 0)) pf9) pf10)                
     in
-    ?rhs
+    (void (pf4 pf11))
