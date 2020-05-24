@@ -40,7 +40,8 @@ ZZ_plus_wrt_rel a b c d pf1 pf2 = let
   (ZZ_Rel_is_sym pf6)))
 
 ||| Proof that a + ZZ.zero = a
-ZZ_zero_is_additive_identity : (a : ZZ) -> (ZZ_plus ZZ.zero a = a)
-ZZ_zero_is_additive_identity (a, b) = Refl
+ZZ_zero_is_additive_identity : (a : ZZ) -> ((ZZ_plus ZZ.zero a = a), (ZZ_plus a ZZ.zero = a))
+ZZ_zero_is_additive_identity (a, b) = (Refl, (rewrite (plusCommutative a 0) in
+                                             (rewrite (plusCommutative b 0) in Refl)))
 
 

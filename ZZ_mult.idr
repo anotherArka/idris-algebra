@@ -190,7 +190,8 @@ ZZ_is_integral_domain_helper (S a) (S b) (S c) (S d) pfRel_mult = let
     Right pf => Right pf
     Left pf => Left (cong {f = S} pf)
 
+
+
 ZZ_is_integral_domain : (x, y : ZZ) -> (ZZ_Rel (ZZ_mult x y) ZZ.zero) -> 
   (Either (ZZ_Rel x ZZ.zero) (ZZ_Rel y ZZ.zero))
 ZZ_is_integral_domain (a, b) (c, d) pf = ZZ_is_integral_domain_helper a b c d pf   
-

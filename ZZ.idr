@@ -58,5 +58,10 @@ Eq_implies_ZZ_Rel {x = a} {y = a} Refl = ZZ_Rel_is_refl {x = a}
 ZZ_Rel_is_dec : (a, b : ZZ) -> (Dec (ZZ_Rel a b))
 ZZ_Rel_is_dec (a, b) (c , d) = decEq (a + d) (b + c)
 
+||| Proof that ((S n), 0) is not zero
+ZZ_Rel_property1 : (n : Nat) -> (ZZ_Rel ((S n), 0) ZZ.zero) -> Void
+ZZ_Rel_property1 n pfRel = Z_is_not_Sn n 
+  (rewrite (plusCommutative Z n) in pfRel)
+
 
   

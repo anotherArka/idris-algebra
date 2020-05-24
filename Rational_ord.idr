@@ -7,6 +7,7 @@ import ZZ_ord
 import ZZ_implementations
 import Rational
 import Rational_minus
+import Useful_functions
 
 %access public export
 %access total
@@ -58,14 +59,34 @@ LTE a b = LTEZero (Rational_minus a b)
 --   in
 --   trans (trans pf5 (sym pf4)) pf1
 
-LTZero_respects_Rel : (a, b : Rational) -> (Rational_Rel a b) -> (LTEZero a) -> (LTEZero b)
-LTZero_respects_Rel (a, b) (p, q) pfRel pfLTE = let
+LTEZero_respects_Rel : (a, b : Rational) -> (Rational_Rel a b) -> (LTEZero a) -> (LTEZero b)
+LTEZero_respects_Rel (a, b) (p, q) pfRel pfLTE = let
   in
   case (LTEZero_is_dec p) of
     (Yes pfLTE_p) => pfLTE_p
     (No contraLTE_p) => let
-      -- pf1 = LTE_property_5 p (contraLTE_p) -- 0 <= p 
-      -- pf2 = LTE_property_2 (S b) -- 0 <= (b + 1, 0)
-      -- pf3 = LTE_property_1 p ((S b), 0) pf1 pf2 -- 0 <= p * (b + 1)      
+      pf1 = LTE_property_5 p (contraLTE_p) -- 0 <= p and (ZZ_Rel p 0) -> Void
+      pf2 = LTE_property_2 (S b) -- 0 <= (b + 1, 0)
+      pf3 = ZZ_Rel_property1 b -- (ZZ_Rel ((S b), 0)) ZZ.zerp) -> Void
+      pf4 : ((ZZ_Rel (ZZ_mult p ((S b), 0)) ZZ.zero) -> Void) = \pf => 
+      (case (ZZ_is_integral_domain _ _ pf) of 
+        Left left => (snd pf1) left
+        Right right => pf3 right)
+      pf5 : ((ZZ_Rel (ZZ_mult a ((S q), 0)) ZZ.zero) -> Void) = \pf_in => 
+        (pf4 (ZZ_Rel_is_trans
+             {x = ZZ_mult p ((S b), 0)}
+             {y = ZZ_mult a ((S q), 0)}
+             {z = ZZ.zero} 
+             (ZZ_Rel_is_sym 
+             {y = ZZ_mult p ((S b), 0)}
+             {x = ZZ_mult a ((S q), 0)}
+             pfRel) pf_in))              
+      pf6 = LTEZero_respects_ZZ_Rel a (ZZ_plus a (0, 0)) 
+        (Eq_implies_ZZ_Rel (sym (snd (ZZ_zero_is_additive_identity a)))) pfLTE
+      pf7 = LTE_property_3 a ((S q), 0) pf6 (LTE_property_2 (S q))
+      pf8 = Family_respects_eq {f = \x => LTEZero x} 
+        (snd (ZZ_zero_is_additive_identity (ZZ_mult a (S q, 0)))) pf7
+      pf9 = LTEZero_respects_ZZ_Rel (ZZ_mult a ((S q), 0)) (ZZ_mult p ((S b), 0)) pfRel pf8 
+      -- we have to prove that for integers a <= 0 and a >= 0 implies a = 0 then use it on (ZZ_mult p ((S b), 0))       
     in
     ?rhs
