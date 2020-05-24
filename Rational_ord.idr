@@ -60,27 +60,12 @@ LTE a b = LTEZero (Rational_minus a b)
 
 LTZero_respects_Rel : (a, b : Rational) -> (Rational_Rel a b) -> (LTEZero a) -> (LTEZero b)
 LTZero_respects_Rel (a, b) (p, q) pfRel pfLTE = let
-  pf1 = LTE_property_2 (S q)
-  pf2 = LTE_property_2 (S b)
   in
   case (LTEZero_is_dec p) of
     (Yes pfLTE_p) => pfLTE_p
     (No contraLTE_p) => let
-      pf3 = ZZ_plusCommutative a ZZ.zero -- a + 0 = 0 + a
-      pf4 = ZZ_zero_is_additive_identity a -- 0 + a = a
-      pf5 = trans pf3 pf4 -- a + 0 = a
-      pf6 = ZZ_Rel_is_sym {x = (ZZ_plus a ZZ.zero)} {y = a} (Eq_implies_ZZ_Rel pf5) -- a ~  (a + 0) 
-      pf7 = LTEZero_respects_ZZ_Rel a (ZZ_plus a ZZ.zero) pf6 pfLTE -- LTEZero (a + 0)
-      pf8 = LTE_property_3 a ((S q), 0) pf7 pf1 -- LTE (a * (q + 1)) ZZ.zero
-      pf9 = ZZ_plusCommutative (ZZ_mult a (S q, 0)) ZZ.zero -- (a * (q + 1)) + 0 = 0 + (a * (q + 1))  
-      pf10 = ZZ_zero_is_additive_identity (ZZ_mult a (S q, 0)) -- 0 + (a * (q + 1)) = (a * (q + 1))
-      pf11 = trans pf9 pf10 -- (a * (q + 1)) + 0 = (a * (q + 1))
-      pf12 = (Eq_implies_ZZ_Rel pf11) -- (a * (q + 1)) + 0 ~ (a * (q + 1))    
-      pf13 = LTEZero_respects_ZZ_Rel (ZZ_plus (ZZ_mult a (S q, 0)) 0) (ZZ_mult a (S q, 0)) pf12 pf8 
-      --  LTEZero (ZZ_mult a (S q, 0))
-      pf14 = LTEZero_respects_ZZ_Rel (ZZ_mult a (S q, 0)) (ZZ_mult p (S b, 0)) pfRel pf13
-      pf15 = LTE_property_5 p contraLTE_p -- LTE ZZ.zero p
-      pf16 = LTE_property_1 p ((S b), 0) pf15 pf2 -- LTE ZZ.zero (ZZ_mult p (S q, 0))
-     
+      -- pf1 = LTE_property_5 p (contraLTE_p) -- 0 <= p 
+      -- pf2 = LTE_property_2 (S b) -- 0 <= (b + 1, 0)
+      -- pf3 = LTE_property_1 p ((S b), 0) pf1 pf2 -- 0 <= p * (b + 1)      
     in
     ?rhs

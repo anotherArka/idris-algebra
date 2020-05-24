@@ -35,7 +35,7 @@ LTE a b = LTEZero (ZZ_minus a b)
 LTE_is_dec : (a, b : ZZ) -> (Dec (LTE a b))
 LTE_is_dec a b = LTEZero_is_dec _
 
-||| Proof that if a ~ b and a <= 0 then b = 0
+||| Proof that if a ~ b and a <= 0 then b <= 0
 LTEZero_respects_ZZ_Rel : (a, b : ZZ) -> (ZZ_Rel a b) -> (LTEZero a) -> (LTEZero b)
 LTEZero_respects_ZZ_Rel (a, b) (c, d) pfRel pfLTE = let
   pf1 = LTE_property_1 a b d pfLTE
@@ -49,12 +49,14 @@ LTEZero_respects_ZZ_Rel (a, b) (c, d) pfRel pfLTE = let
   in
   pf8
 
+LTE_is_refl : LTE ZZ.zero ZZ.zero
+LTE_is_refl = LTEZero
+
 ||| Proof that if a >= 0 and b >= 0 then a * b >= 0
 LTE_property_1 : (a, b : ZZ) -> (LTE ZZ.zero a) -> (LTE ZZ.zero b) -> (LTE ZZ.zero (ZZ_mult a b))
 LTE_property_1 (a, Z) (c, d) LTEZero pf2 = rewrite (plusCommutative (mult a d) 0) in
   (rewrite (plusCommutative (mult a c) 0) in 
   LTE_property_3 _ _ _ pf2)
-
 LTE_property_1 ((S a), (S b)) (c, d) (LTESucc pf1) pf2 = let
   induct_hyp = LTE_property_1 (a, b) (c, d)  pf1 pf2
   pf = LTE_property_1 _ _ (d + c) induct_hyp -- this one is from properties of nat
@@ -63,7 +65,7 @@ LTE_property_1 ((S a), (S b)) (c, d) (LTESucc pf1) pf2 = let
   (rewrite (adding_four_3 c (a * c) d (b * d)) in 
   (rewrite (plusCommutative c d) in pf))
 
-|||Proof that (S q, 0) >= 0
+|||Proof that (q, 0) >= 0
 LTE_property_2 : (n : Nat) -> (LTE ZZ.zero (n , 0))
 LTE_property_2 Z = LTEZero
 LTE_property_2 (S k) = LTEZero
@@ -81,13 +83,23 @@ LTE_property_3 (a, b) (c, d) pf1 pf2 =
   (rewrite (plusCommutative (a * c) (b * d)) in 
   (rewrite (plusCommutative (a * d) (b * c)) in pf5)))
 
-||| Proof that if (a >= 0) leads to a contradiction then (a <= 0)
-LTE_property_4 : (a : ZZ) -> ((LTE ZZ.zero a) -> Void) -> (LTEZero a)
-LTE_property_4 (a, b) contraLTE = (LTE_property_5 a b contraLTE)
+||| Proof that if (a >= 0) leads to a contradiction then (a <= 0) and (not (a = 0))
+LTE_property_4 : (a : ZZ) -> ((LTE ZZ.zero a) -> Void) -> ((LTEZero a), (ZZ_Rel a ZZ.zero) -> Void)
+LTE_property_4 (a, b) contraLTE = ((LTE_property_5 a b contraLTE), \pf =>
+  let
+  pf1 = trans (plusCommutative Z a) (trans pf (plusCommutative b Z)) 
+  pf2 = LTEZero_respects_ZZ_Rel ZZ.zero (b, a) pf1 LTE_is_refl  
+  in
+  (contraLTE pf2))
 
-||| Proof that if (a <= 0) leads to a contradiction then (a >= 0)
-LTE_property_5 : (a : ZZ) -> ((LTEZero a) -> Void) -> (LTE ZZ.zero a)
-LTE_property_5 (a, b) contraLTE = LTE_property_5 b a contraLTE
+||| Proof that if (a <= 0) leads to a contradiction then (a >= 0) and (not (a = 0))
+LTE_property_5 : (a : ZZ) -> ((LTEZero a) -> Void) -> ((LTE ZZ.zero a), (ZZ_Rel a ZZ.zero) -> Void)
+LTE_property_5 (a, b) contraLTE = (LTE_property_5 b a contraLTE, \pf =>
+  let
+  pf1 = sym (trans (plusCommutative Z a) (trans pf (plusCommutative b Z))) 
+  pf2 = LTEZero_respects_ZZ_Rel ZZ.zero (a, b) pf1 LTE_is_refl
+  in
+  (contraLTE pf2))
 
 ||| Proof that if a <= b and b <= a then a = b
 LTE_property_6 : (x, y : ZZ) -> (LTE x y) -> (LTE y x) -> (ZZ_Rel x y)
