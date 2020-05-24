@@ -26,19 +26,51 @@ ZZ_mult_commutative (a, b) (c, d) = rewrite (multCommutative a c) in
   (rewrite (multCommutative b c) in 
   (rewrite (plusCommutative (c * b) (d * a)) in Refl))))
 
-Z_mult_wrt_rel_helper : (a, b, c : ZZ) -> (ZZ_Rel a b) -> (ZZ_Rel (ZZ_mult a c) (ZZ_mult b c))
-Z_mult_wrt_rel_helper (a, b) (c, d) (m, n) pfRel = ?rhs_wrt_helper -- this needs ZZ_is_integral_domain
+ZZ_mult_wrt_rel_helper_helper : (a, b, c, d, m, n : Nat) -> ((a + d) = (b + c)) ->
+  (((a * m) + (b * n)) + ((c * n) + (d * m)) = (d + a) * (n + m))
+ZZ_mult_wrt_rel_helper_helper a b c d m n pfRel = let
+  pf1 =  adding_four_2 (a * m) (b * n) (c * n) (d * m)
+  pf2 = trans (plusCommutative d a) (trans pfRel (plusCommutative b c))
+  pf3 = sym (distributive_right c b n)
+  pf4 = sym (distributive_right d a m)
+  pf5 = cong {f = (\x => (x * n))} pf2
+  pf6 = cong {f = (\x => (x * m))} pf2
+  pf7 = cong {f = (\x => (x + ((d * m) + (a * m))))} pf3
+  pf8 = cong {f = (\x => (((c + b) * n) + x))} pf4
+  pf9 = trans pf7 pf8
+  pf10 = cong {f = (\x => (x + ((d + a) * m)))} (sym pf5)
+  pf11 = sym (distributive_left (d + a) n m)
+  pf12 = trans pf1 (trans pf7 (trans pf8 (trans pf10 pf11)))
+  in
+  pf12
 
+
+ZZ_mult_wrt_rel_helper : (a, b, c : ZZ) -> (ZZ_Rel a b) -> (ZZ_Rel (ZZ_mult a c) (ZZ_mult b c))
+ZZ_mult_wrt_rel_helper (a, b) (c, d) (m, n) pfRel = let
+  pf1 = ZZ_mult_wrt_rel_helper_helper a b c d m n pfRel
+  pf2 = ZZ_mult_wrt_rel_helper_helper a b c d n m pfRel
+  pf3 = cong {f = (\x => ((d + a) * x))} (plusCommutative n m)
+  in
+  (trans pf1 (trans pf3 (sym pf2)))
 
 ||| Proof that ZZ_mult respects ZZ_Rel
 ZZ_mult_wrt_rel : (a, b, c, d : ZZ) -> (ZZ_Rel a b) -> (ZZ_Rel c d) -> (ZZ_Rel (ZZ_mult a c) (ZZ_mult b d))
+ZZ_mult_wrt_rel a b c d pfRel_ab pfRel_cd = let
+  pf1 = ZZ_mult_wrt_rel_helper a b c pfRel_ab
+  pf2 = Eq_implies_ZZ_Rel (ZZ_mult_commutative b c)
+  pf3 = ZZ_mult_wrt_rel_helper c d b pfRel_cd
+  pf4 = Eq_implies_ZZ_Rel (ZZ_mult_commutative d b)
+  in
+  ZZ_Rel_is_trans pf1
+  (ZZ_Rel_is_trans pf2
+  (ZZ_Rel_is_trans pf3 pf4))
 
 ||| (a + 1, b + 1) * (c, d) ~ (a, b) ~ (c, d)
 ZZ_mult_property_1 : (a, b, c, d : Nat) -> (ZZ_Rel (ZZ_mult (S a, S b) (c, d)) (ZZ_mult (a, b) (c, d)))
 ZZ_mult_property_1 a b c d = rewrite (sym (plusAssociative c (a * c) ((S b) * d))) in 
   (rewrite (plusCommutative (a * c) ((S b) * d)) in ?rhs_mult_property_1)
 
-||| Proof that if a * b ~ 0 then either a ~ 0 or b ~ 0
+||| Helper to prove that if a * b ~ 0 then either a ~ 0 or b ~ 0
 ZZ_is_integral_domain_helper : (a, b, c, d : Nat) -> (ZZ_Rel (ZZ_mult (a, b) (c, d)) ZZ.zero) -> 
   (Either (ZZ_Rel (a, b) ZZ.zero) (ZZ_Rel (c, d) ZZ.zero))
 ZZ_is_integral_domain_helper Z Z _ _ _ = Left Refl
@@ -162,4 +194,8 @@ ZZ_is_integral_domain_helper (S a) (S b) (S c) (S d) pfRel_mult = let
   case pf26 of
     Right pf => Right pf
     Left pf => Left (cong {f = S} pf)
+
+ZZ_is_integral_domain : (x, y : ZZ) -> (ZZ_Rel (ZZ_mult x y) ZZ.zero) -> 
+  (Either (ZZ_Rel x ZZ.zero) (ZZ_Rel y ZZ.zero))
+ZZ_is_integral_domain (a, b) (c, d) pf = ZZ_is_integral_domain_helper a b c d pf   
 

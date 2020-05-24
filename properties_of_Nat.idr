@@ -106,6 +106,18 @@ cancellation_mult a (S b) (S c) pfEq = let
   pf2 = cancellation _ _ _ pf1 
   in
   cong (cancellation_mult _ _ _ pf2)
+
+distributive_right : (a, b, c : Nat) -> ((a + b) * c =  (a * c) + (b * c))
+distributive_right Z b c = Refl
+distributive_right (S a) b c = rewrite (distributive_right a b c) in 
+  (rewrite (plusAssociative c (a * c) (b * c)) in Refl)
+
+distributive_left : (a, b, c : Nat) -> ((a * (b + c)) = (a * b) + (a * c))
+distributive_left a b c = rewrite (multCommutative a (b + c)) in 
+  (rewrite (distributive_right b c a) in 
+  (rewrite (multCommutative b a) in 
+  (rewrite (multCommutative c a) in Refl)))
+
 -- public export
  	
 -- multiplying_four_1 : (a : Nat) -> (b : Nat) -> (k : Nat) -> (l : Nat) -> mult (mult a b) (mult k l) = mult a (mult b (mult k l))
