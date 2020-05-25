@@ -26,6 +26,22 @@ ZZ_mult_commutative (a, b) (c, d) = rewrite (multCommutative a c) in
   (rewrite (multCommutative b c) in 
   (rewrite (plusCommutative (c * b) (d * a)) in Refl))))
 
+ZZ_mult_associative : (x, y, z : ZZ) -> (ZZ_Rel (ZZ_mult x (ZZ_mult y z)) (ZZ_mult (ZZ_mult x y) z))
+ZZ_mult_associative (a, b) (c, d) (p, q) = rewrite (distributive_left a (c * p) (d * q)) in 
+  (rewrite (distributive_left b (c * q) (d * p)) in 
+  (rewrite (distributive_right (a * c) (b * d) q) in 
+  (rewrite (distributive_right (a * d) (b * c) p) in 
+  (rewrite (distributive_left a (c * q) (d * p)) in 
+  (rewrite (distributive_left b (c * p) (d * q)) in 
+  (rewrite (distributive_right (a * c) (b * d) p) in 
+  (rewrite (distributive_right (a * d) (b * c) q) in 
+  (rewrite (multAssociative a c p) in 
+  (rewrite (multAssociative a d q) in 
+  (rewrite (multAssociative b c q) in 
+  (rewrite (multAssociative b d p) in 
+  (rewrite (multAssociative a c q) in 
+  (rewrite (multAssociative a d p) in
+  (rewrite (multAssociative b c p) in ?rhs))))))))))))))
 ZZ_mult_wrt_rel_helper_helper : (a, b, c, d, m, n : Nat) -> ((a + d) = (b + c)) ->
   (((a * m) + (b * n)) + ((c * n) + (d * m)) = (d + a) * (n + m))
 ZZ_mult_wrt_rel_helper_helper a b c d m n pfRel = let
@@ -194,4 +210,12 @@ ZZ_is_integral_domain_helper (S a) (S b) (S c) (S d) pfRel_mult = let
 
 ZZ_is_integral_domain : (x, y : ZZ) -> (ZZ_Rel (ZZ_mult x y) ZZ.zero) -> 
   (Either (ZZ_Rel x ZZ.zero) (ZZ_Rel y ZZ.zero))
-ZZ_is_integral_domain (a, b) (c, d) pf = ZZ_is_integral_domain_helper a b c d pf   
+ZZ_is_integral_domain (a, b) (c, d) pf = ZZ_is_integral_domain_helper a b c d pf
+
+multiplying_four_1 : (a, b, c, d : ZZ) -> (ZZ_Rel 
+  (ZZ_mult (ZZ_mult a b) (ZZ_mult c d))  
+  (ZZ_mult (ZZ_mult a d) (ZZ_mult c b))) 
+multiplying_four_1 a b c d = let 
+  
+  in
+  ?rhs_ZZ_multiplying_four_1
