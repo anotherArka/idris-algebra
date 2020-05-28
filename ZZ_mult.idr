@@ -41,7 +41,12 @@ ZZ_mult_associative (a, b) (c, d) (p, q) = rewrite (distributive_left a (c * p) 
   (rewrite (multAssociative b d p) in 
   (rewrite (multAssociative a c q) in 
   (rewrite (multAssociative a d p) in
-  (rewrite (multAssociative b c p) in ?rhs))))))))))))))
+  (rewrite (multAssociative b c p) in 
+  (rewrite (multAssociative b d q) in
+  (rewrite (adding_eight_1 ((a * c) * p) ((a * d) * q) ((b * c) * q) ((b * d) * p)
+                           ((a * c) * q) ((b * d) * q) ((a * d) * p) ((b * c) * p)) 
+    in Refl ))))))))))))))))
+  
 ZZ_mult_wrt_rel_helper_helper : (a, b, c, d, m, n : Nat) -> ((a + d) = (b + c)) ->
   (((a * m) + (b * n)) + ((c * n) + (d * m)) = (d + a) * (n + m))
 ZZ_mult_wrt_rel_helper_helper a b c d m n pfRel = let

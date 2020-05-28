@@ -125,6 +125,21 @@ distributive_left a b c = rewrite (multCommutative a (b + c)) in
   (rewrite (multCommutative b a) in 
   (rewrite (multCommutative c a) in Refl)))
 
+adding_eight_1 : (s, t, u, v, w, x, y, z : Nat) -> 
+  ((((s + t) + (u + v)) + 
+    ((w + x) + (y + z))) = 
+
+   (((w + y) + (z + x)) + 
+    ((s + v) + (t + u))))
+
+adding_eight_1 s t u v w x y z = rewrite (adding_four_3 s v t u) in 
+  (rewrite (plusCommutative v u) in 
+  (rewrite (adding_four_2 w y z x) in 
+  (rewrite (plusCommutative z y) in 
+  (rewrite (plusCommutative x w) in 
+  (rewrite (plusCommutative (y + z) (w + x)) in 
+  (rewrite (plusCommutative ((w + x) + (y + z)) ((s + t) + (u + v))) in Refl))))))  
+
 -- public export
  	
 -- multiplying_four_1 : (a : Nat) -> (b : Nat) -> (k : Nat) -> (l : Nat) -> mult (mult a b) (mult k l) = mult a (mult b (mult k l))
