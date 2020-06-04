@@ -21,3 +21,14 @@ apply str_f st = let
   f_tail = (\n => (str_f (S n)))
   in
   (f_head req) :: (apply f_tail st)
+
+||| For now we work only with the spread of natural numbers.
+||| A spread is an way of accepting finite strings.
+||| Given a vector we should able to tell whether there
+||| is a stream in the spread extending it.
+||| Also it should be possible to extend any non-null vector
+interface Natural_spread (rule : {m : Nat} -> (Vect m Nat) -> Type) where 
+  Backward : {l : Nat} -> (accepted : (Vect (S l) Nat)) -> (rule accepted) -> (rule (tail accepted))
+  Forward  : {l : Nat} -> (accepted : (Vect (S l) Nat)) -> (rule accepted) -> 
+    (k : Nat ** (rule (k :: accepted)))                                    
+      
