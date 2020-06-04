@@ -221,6 +221,42 @@ multiplying_four_1 : (a, b, c, d : ZZ) -> (ZZ_Rel
   (ZZ_mult (ZZ_mult a b) (ZZ_mult c d))  
   (ZZ_mult (ZZ_mult a d) (ZZ_mult c b))) 
 multiplying_four_1 a b c d = let 
-  
+  pf1 = ZZ_Rel_is_sym (ZZ_mult_associative a b (ZZ_mult c d))
+  pf2 = Eq_implies_ZZ_Rel (ZZ_mult_commutative c d)
+  pf3 = ZZ_mult_wrt_rel b b (ZZ_mult c d) (ZZ_mult d c) ZZ_Rel_is_refl pf2
+  pf5 = ZZ_mult_associative b d c
+  pf6 = Eq_implies_ZZ_Rel (ZZ_mult_commutative b d)
+  pf7 = ZZ_mult_wrt_rel (ZZ_mult b d) (ZZ_mult d b) c c pf6 ZZ_Rel_is_refl
+  pf8 = ZZ_Rel_is_sym {x = (ZZ_mult d (ZZ_mult b c))} {y = (ZZ_mult (ZZ_mult d b) c)}
+    (ZZ_mult_associative d b c)
+  pf9 = Eq_implies_ZZ_Rel (ZZ_mult_commutative c b)
+  pf10 = ZZ_Rel_is_sym
+    {x = (ZZ_mult d (ZZ_mult c b))}
+    {y = (ZZ_mult d (ZZ_mult b c))}
+    (ZZ_mult_wrt_rel d d (ZZ_mult c b) (ZZ_mult b c) ZZ_Rel_is_refl pf9)  
+  pf11 = ZZ_Rel_is_trans 
+    {x = (ZZ_mult b (ZZ_mult c d))}
+    {y = (ZZ_mult b (ZZ_mult d c))}
+    {z = (ZZ_mult (ZZ_mult b d) c)}
+    pf3 pf5 
+  pf12 = ZZ_Rel_is_trans 
+    {x = (ZZ_mult (ZZ_mult b d) c)}
+    {y = (ZZ_mult (ZZ_mult d b) c)}
+    {z = (ZZ_mult d (ZZ_mult b c))}
+    pf7 pf8
+  pf13 = ZZ_Rel_is_trans 
+    {x = (ZZ_mult b (ZZ_mult c d))}
+    {y = (ZZ_mult (ZZ_mult b d) c)}
+    {z = (ZZ_mult d (ZZ_mult b c))}
+    pf11 pf12
+  pf14 = ZZ_Rel_is_trans 
+    {x = (ZZ_mult b (ZZ_mult c d))}
+    {y = (ZZ_mult d (ZZ_mult b c))}
+    {z = (ZZ_mult d (ZZ_mult c b))}
+    pf13 pf10
+  pf15 = ZZ_mult_wrt_rel a a (ZZ_mult b (ZZ_mult c d)) (ZZ_mult d (ZZ_mult c b)) ZZ_Rel_is_refl pf14      
+  pf16 = ZZ_mult_associative a d (ZZ_mult c b)
+  pf17 = ZZ_Rel_is_trans pf1 pf15
+  pf18 = ZZ_Rel_is_trans pf17 pf16   
   in
-  ?rhs_ZZ_multiplying_four_1
+  pf18
