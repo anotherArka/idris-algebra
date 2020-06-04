@@ -28,7 +28,16 @@ apply str_f st = let
 ||| is a stream in the spread extending it.
 ||| Also it should be possible to extend any non-null vector
 interface Natural_spread (rule : {m : Nat} -> (Vect m Nat) -> Type) where 
-  Backward : {l : Nat} -> (accepted : (Vect (S l) Nat)) -> (rule accepted) -> (rule (tail accepted))
+  Backward : {l : Nat} -> (accepted : (Vect (S (S l)) Nat)) -> (rule accepted) -> (rule (tail accepted))
   Forward  : {l : Nat} -> (accepted : (Vect (S l) Nat)) -> (rule accepted) -> 
-    (k : Nat ** (rule (k :: accepted)))                                    
+    (k : Nat ** (rule (k :: accepted)))
+
+||| Fan is the shorthand for finitary spread. 
+||| Thinking a spread as a tree, it is called finitary if there are only finite possibilities
+||| from which the spread can start, and finite ways to extend it. 
+interface Natural_spread rule => Natural_fan (rule : {m : Nat} -> (Vect m Nat) -> Type) where
+  Starts_finitly : (bound : Nat ** ((k : Nat) -> (LT bound k) -> (rule (k :: Nil)) -> Void))
+  Extends_finitly : {l : Nat} -> (accepted : Vect l Nat) -> (rule accepted) -> 
+    (bound : Nat ** ((k : Nat) -> (LT bound k) -> (rule (k :: accepted)) -> Void)) 
+
       
