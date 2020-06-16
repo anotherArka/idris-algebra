@@ -23,11 +23,11 @@ apply str_f st = let
   in
   (f_head req) :: (apply f_tail st)
 
+||| A spread is given by a law on natural numbers such that
+||| 1. It is decidable
+||| 2. If (x :: xs) is accepted then xs is accepted
+||| 3. If xs is accepted then there is at least one acceptable extension (x :: xs)
 data Natural_spread : Type where
--- A spread is given by a law on natural numbers such that
--- 1. It is decidable
--- 2. If (x :: xs) is accepted then xs is accepted
--- 3. If xs is accepted then there is at least one acceptable extension (x :: xs)
   Spread : (law : (n : Nat) -> (xs : Vect n Nat) -> Type) ->
          ((n : Nat) -> (xs : Vect n Nat) -> (Dec (law n xs))) ->
          ((n : Nat) -> (xs : Vect (S n) Nat) -> (law (S n) xs) -> (law n (tail xs))) ->
@@ -50,6 +50,24 @@ law_goes_backward (Spread _ _ backward _ ) = backward
 law_extendable : (spread : Natural_spread) -> (n : Nat) -> (xs : Vect n Nat) ->
   (law_of spread n xs) -> (x : Nat ** (law_of spread (S n) (x :: xs)))
 law_extendable (Spread _ _ _ extendable_pf) = extendable_pf  
+
+||| A spread is finite is any acceptable finite sequence only has a finite possible
+||| extensions.
+data Finitary_spread : Type where
+   Finitary : (spread : Natural_spread) ->
+     ((n : Nat) -> (xs : Vect n Nat) -> (law_of spread n xs) -> 
+     (upper_limit : Nat ** ((m : Nat) -> (LT upper_limit m) -> 
+       (law_of spread (S n) (m :: xs)) -> Void))) ->
+     Finitary_spread 
+
+||| A spread defines a collection of streams in the sense that 
+||| each finite segment is of the stream is accepted. 
+||| Notice that we had to take reverse since appending is done
+||| in the beginning of a vector.
+data Species_of_spread : (spread : Natural_spread) -> Type where
+  Species : (sequence : Stream Nat) -> (l : Nat) ->
+    (law_of spread l (reverse (pick_upto l sequence))) ->
+    (Species_of_spread spread)
 
 {- 
 ------------------------------------------------------------------------------------------------
