@@ -7,12 +7,15 @@ import Subtype
 -- %access public export
 -- %access total
 
+----------------------------------------------------------------------------------------------------------
 ||| Functions on (stream dom).
 ||| Representing the fact that for any n : Nat the n-th element of the output
 ||| should be computable using only a finite subset of the infinite data.
 Stream_function_type : (dom, cod : Type) -> Type
 Stream_function_type dom cod = (n : Nat) -> (m : Nat ** ((Vect m dom) -> cod))
+----------------------------------------------------------------------------------------------------------
 
+----------------------------------------------------------------------------------------------------------
 ||| Applies a stream function on a stream to get a stream
 apply : {dom, cod : Type} -> (str_f : Stream_function_type dom cod)  -> (st : Stream dom) -> (Stream cod)
 apply str_f st = let
@@ -22,7 +25,9 @@ apply str_f st = let
   f_tail = (\n => (str_f (S n)))
   in
   (f_head req) :: (apply f_tail st)
+----------------------------------------------------------------------------------------------------------
 
+----------------------------------------------------------------------------------------------------------
 ||| A spread is given by a law on natural numbers such that
 ||| 1. It is decidable
 ||| 2. If (x :: xs) is accepted then xs is accepted
@@ -33,7 +38,10 @@ data Natural_spread : Type where
          ((n : Nat) -> (xs : Vect (S n) Nat) -> (law (S n) xs) -> (law n (tail xs))) ->
          ((n : Nat) -> (xs : Vect n Nat) -> (law n xs) -> (x : Nat ** (law (S n) (x :: xs)))) ->
          Natural_spread  
+----------------------------------------------------------------------------------------------------------
 
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
 -- The Following gives easy ways to extract components from a spread 
 
 law_of : Natural_spread -> (n : Nat) -> (xs : Vect n Nat) -> Type
@@ -50,7 +58,10 @@ law_goes_backward (Spread _ _ backward _ ) = backward
 law_extendable : (spread : Natural_spread) -> (n : Nat) -> (xs : Vect n Nat) ->
   (law_of spread n xs) -> (x : Nat ** (law_of spread (S n) (x :: xs)))
 law_extendable (Spread _ _ _ extendable_pf) = extendable_pf  
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
 
+----------------------------------------------------------------------------------------------------------
 ||| A spread is finite is any acceptable finite sequence only has a finite possible
 ||| extensions.
 data Finitary_spread : Type where
@@ -59,7 +70,9 @@ data Finitary_spread : Type where
      (upper_limit : Nat ** ((m : Nat) -> (LT upper_limit m) -> 
        (law_of spread (S n) (m :: xs)) -> Void))) ->
      Finitary_spread 
+----------------------------------------------------------------------------------------------------------
 
+----------------------------------------------------------------------------------------------------------
 ||| A spread defines a collection of streams in the sense that 
 ||| each finite segment is of the stream is accepted. 
 ||| Notice that we had to take reverse since appending is done
@@ -68,6 +81,25 @@ data Species_of_spread : (spread : Natural_spread) -> Type where
   Species : (sequence : Stream Nat) -> (l : Nat) ->
     (law_of spread l (reverse (pick_upto l sequence))) ->
     (Species_of_spread spread)
+----------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------
+||| A bar is a subset of acceptable vectors of a spread such that
+||| each acceptable vector has an extension in the bar.
+data Bar_of_spread : (spread : Natural_spread) -> Type where
+  Bar : (spread : Natural_spread) -> 
+    
+    (bar : (n : Nat) -> (xs : Vect n Nat) -> (law_of spread n xs) -> Type) -> 
+    
+    ((n : Nat) -> (xs : Vect n Nat) -> (pf_spread : (law_of spread n xs)) ->
+      (Dec (bar n xs pf_spread))) ->
+    
+    ((n : Nat) -> (xs : Vect n Nat) -> (pf_spread : (law_of spread n xs)) ->
+      (m : Nat ** (ys : (Vect m Nat) ** (bar n xs pf_spread)))) ->
+
+    (Bar_of_spread spread)
+----------------------------------------------------------------------------------------------------------
+
 
 {- 
 ------------------------------------------------------------------------------------------------
